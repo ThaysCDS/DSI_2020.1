@@ -113,6 +113,7 @@ class DSIApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'DSI App (BSI UFRPE)',
       theme: ThemeData(
         primarySwatch: Colors.green,
@@ -170,6 +171,17 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('WordPair App'),
+        // actions: <Widget>[
+        //   IconButton(
+        //       icon: Icon(Icons.search),
+        //       onPressed: () {
+        //         showSearch(
+        //             context: context,
+        //             delegate: WordPairSearch()
+        //         );
+        //       }
+        //   )
+        // ],
       ),
       body: _pages[_pageIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -268,16 +280,38 @@ class _WordPairListPageState extends State<WordPairListPage> {
   ///inclua um separador ([Divider]) na listagem.
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: items.length * 2,
-        itemBuilder: (BuildContext _context, int i) {
-          if (i.isOdd) {
-            return Divider();
+
+    final myWords = wordPairs;
+
+    return Column(
+      children: <Widget>[
+        TextField(
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.all(16),
+            hintText: 'Search'
+          ),
+          onChanged: (string){
+            setState(() {
+              wordPairs = string.isEmpty? myWords
+                  : items.where((element) => element.toString().contains(string)).toList();
+
+            });
           }
-          final int index = i ~/ 2;
-          return _buildRow(context, index + 1, items.elementAt(index));
-        });
+        ),
+        Expanded(
+          child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: items.length * 2,
+              itemBuilder: (BuildContext _context, int i) {
+                if (i.isOdd) {
+                  return Divider();
+                }
+                final int index = i ~/ 2;
+                return _buildRow(context, index + 1, items.elementAt(index));
+              })
+        )
+      ]
+    );
   }
 
   ///Constroi uma linha da listagem a partir do par de palavras e do índice.
@@ -320,6 +354,66 @@ class _WordPairListPageState extends State<WordPairListPage> {
         arguments: wordPair);
   }
 }
+
+class WordPairSearch extends SearchDelegate<_WordPairListPageState>{
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: (){
+            query = "";
+          }
+          )
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: (){
+            close(context, null);
+          }
+      );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return Container();
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final myWords = query.isEmpty? wordPairs
+    : wordPairs.where((element) => element.toString().contains(query)).toList();
+
+    return myWords.isEmpty?
+        Container(
+          padding: EdgeInsets.all(16),
+          child: Text(
+              'Nenhum resultado encontrado',
+          style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold
+          ),
+          ),
+        )
+        : ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: myWords.length * 2,
+        itemBuilder: (BuildContext context, int i) {
+          if (i.isOdd) {
+            return Divider();
+          }
+          final int index = i ~/ 2;
+          return _WordPairListPageState()._buildRow(context, index+1, myWords.elementAt(index));
+        });
+  }
+}
+
+
 
 ///Página que apresenta a tela de atualização do par de palavras.
 class WordPairUpdatePage extends StatefulWidget {
@@ -400,7 +494,7 @@ class _WordPairUpdatePageState extends State<WordPairUpdatePage> {
       _formKey.currentState.save();
       _updateWordPair();
     });
-    Navigator.pop(context, HomePage.routeName);
+    Navigator.popAndPushNamed(context, HomePage.routeName);
   }
 
   ///Recupera os dados que os campos de texto atualizaram nos atributos da classe
