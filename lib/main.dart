@@ -230,6 +230,7 @@ class _WordPairListPageState extends State<WordPairListPage> {
   void initState() {
     super.initState();
     wordPairs.sort();
+    searchWords.sort();
   }
 
   ///Método getter para retornar os itens. Os itens são ordenados utilizando a
@@ -282,7 +283,7 @@ class _WordPairListPageState extends State<WordPairListPage> {
           ),
           onChanged: (string){
             setState(() {
-              searchWords = string.isEmpty? wordPairs : wordPairs.where((element) => element.toString().contains(string)).toList();
+              searchWords = string.isEmpty? items : items.where((element) => element.toString().contains(string)).toList();
             });
           }
         ),
@@ -309,7 +310,7 @@ class _WordPairListPageState extends State<WordPairListPage> {
         direction: DismissDirection.endToStart,
         onDismissed: (direction){
           setState(() {
-            wordPairs.remove(wordPair);
+            searchWords.remove(wordPair);
           });
         },
         background: Container(
