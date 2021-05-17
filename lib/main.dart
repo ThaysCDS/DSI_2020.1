@@ -82,7 +82,7 @@ class _DSIAppState extends State<DSIApp> {
             Text(
               'carregando...',
               style: TextStyle(
-                color: Colors.green,
+                color: Colors.pink,
                 fontSize: 16.0,
                 fontStyle: FontStyle.italic,
               ),
@@ -99,7 +99,7 @@ class _DSIAppState extends State<DSIApp> {
       debugShowCheckedModeBanner: false,
       title: 'DSI App (BSI UFRPE)',
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch: Colors.pink,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: HomePage(),

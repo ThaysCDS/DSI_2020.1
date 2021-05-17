@@ -47,9 +47,9 @@ Widget _buildLoading(context) {
           Text(
             'carregando...',
             style: TextStyle(
-              color: Colors.green,
+              color: Color(0xFFEA6290),
               fontSize: 16.0,
-              fontStyle: FontStyle.italic,
+              fontStyle: FontStyle.italic
             ),
           ),
         ],
@@ -149,7 +149,7 @@ class _WordPairListPageState extends State<WordPairListPage> {
 
   ///Map com os ícones utilizados no [BottomNavigationBar].
   final _icons = {
-    null: Icon(Icons.thumbs_up_down_outlined),
+    null: Icon(Icons.thumbs_up_down_outlined, color: Color(0xFFEA6290),),
     true: Icon(Icons.thumb_up, color: Colors.blue),
     false: Icon(Icons.thumb_down, color: Colors.red),
   };
